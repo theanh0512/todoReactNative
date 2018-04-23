@@ -1,7 +1,7 @@
 /**
- * Sample React Native App
- * https://github.com/facebook/react-native
- * @flow
+ * App is connected to the store using connect(). It pulls the list data, todos,
+ * out of the store's state using mapStateToProps.
+ * It uses the dispatch() function added to its props to dispatch actions to modify the store.
  */
 
 import React, {Component} from 'react';
@@ -11,41 +11,28 @@ import {actionCreators} from './app/todoListRedux';
 import List from './app/List';
 import Input from './app/Input';
 import Title from './app/Title';
+import {connect} from 'react-redux';
 
-export default class App extends Component {
+const mapStateToProps = (state) => ({
+    todos: state.todos,
+});
 
-    state = {};
-
-    componentWillMount() {
-        const {store} = this.props;
-
-        const {todos} = store.getState();
-        this.setState({todos});
-
-        this.unsubscribe = store.subscribe(() => {
-            const {todos} = store.getState();
-            this.setState({todos});
-        });
-    }
-
-    componentWillUnmount() {
-        this.unsubscribe();
-    }
+class App extends Component {
 
     onAddTodo = (text) => {
-        const {store} = this.props;
+        const {dispatch} = this.props;
 
-        store.dispatch(actionCreators.add(text));
+        dispatch(actionCreators.add(text));
     };
 
     onRemoveTodo = (index) => {
-        const {store} = this.props;
+        const {dispatch} = this.props;
 
-        store.dispatch(actionCreators.remove(index));
+        dispatch(actionCreators.remove(index));
     };
 
     render() {
-        const {todos} = this.state;
+        const {todos} = this.props;
 
         return (
             <View>
@@ -64,3 +51,5 @@ export default class App extends Component {
         );
     }
 }
+
+export default connect(mapStateToProps)(App);
