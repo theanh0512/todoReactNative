@@ -4,52 +4,54 @@
  * It uses the dispatch() function added to its props to dispatch actions to modify the store.
  */
 
-import React, {Component} from 'react';
-import {View} from 'react-native';
+import React, { Component } from "react";
+import { View } from "react-native";
 
-import {actionCreators} from './app/todoListRedux';
-import List from './app/List';
-import Input from './app/Input';
-import Title from './app/Title';
-import {connect} from 'react-redux';
+import { actionCreators } from "./app/todoListRedux";
+import List from "./app/List";
+import Input from "./app/Input";
+import Title from "./app/Title";
+import { connect } from "react-redux";
 
-const mapStateToProps = (state) => ({
-    todos: state.todos,
+const mapStateToProps = state => ({
+  todos: state.todos,
+  goals: state.goals
 });
 
 class App extends Component {
+  onAddTodo = text => {
+    const { dispatch } = this.props;
 
-    onAddTodo = (text) => {
-        const {dispatch} = this.props;
+    dispatch(actionCreators.add(text));
+  };
 
-        dispatch(actionCreators.add(text));
-    };
+  onRemoveTodo = index => {
+    const { dispatch } = this.props;
 
-    onRemoveTodo = (index) => {
-        const {dispatch} = this.props;
+    dispatch(actionCreators.remove(index));
+  };
 
-        dispatch(actionCreators.remove(index));
-    };
+  render() {
+    const { todos, goals } = this.props;
 
-    render() {
-        const {todos} = this.props;
+    return (
+      <View>
+        <Title>To-Do List</Title>
+        <Input
+          placeholder={"Type a todo, then hit enter!"}
+          onSubmitEditing={this.onAddTodo}
+        />
+        <List list={todos} onPressItem={this.onRemoveTodo} />
 
-        return (
-            <View>
-                <Title>
-                    To-Do List
-                </Title>
-                <Input
-                    placeholder={'Type a todo, then hit enter!'}
-                    onSubmitEditing={this.onAddTodo}
-                />
-                <List
-                    list={todos}
-                    onPressItem={this.onRemoveTodo}
-                />
-            </View>
-        );
-    }
+        <Title>Goal List</Title>
+        <Input
+          placeholder={"Type a goal, then hit enter!"}
+          onSubmitEditing={this.onAddTodo}
+        />
+        <List list={goals} onPressItem={this.onRemoveTodo} />
+      </View>
+    );
+  }
 }
 
 export default connect(mapStateToProps)(App);
