@@ -1,43 +1,42 @@
-import React, {Component} from 'react';
-import {StyleSheet, TextInput} from 'react-native';
+import React, { Component } from "react";
+import { StyleSheet, TextInput } from "react-native";
 
 export default class Input extends Component {
+  state = {
+    text: ""
+  };
 
-    state = {
-        text: '',
-    };
+  onChangeText = text => this.setState({ text });
 
-    onChangeText = (text) => this.setState({text});
+  onSubmitEditing = () => {
+    const { onSubmitEditing } = this.props;
+    const { text } = this.state;
 
-    onSubmitEditing = () => {
-        const {onSubmitEditing} = this.props;
-        const {text} = this.state;
+    if (!text) return; // Don't submit if empty
 
-        if (!text) return; // Don't submit if empty
+    onSubmitEditing(text);
+    this.setState({ text: "" });
+  };
 
-        onSubmitEditing(text);
-        this.setState({text: ''});
-    };
+  render() {
+    const { placeholder } = this.props;
+    const { text } = this.state;
 
-    render() {
-        const {placeholder} = this.props;
-        const {text} = this.state;
-
-        return (
-            <TextInput
-                style={styles.input}
-                value={text}
-                placeholder={placeholder}
-                onChangeText={this.onChangeText}
-                onSubmitEditing={this.onSubmitEditing}
-            />
-        );
-    }
+    return (
+      <TextInput
+        style={styles.input}
+        value={text}
+        placeholder={placeholder}
+        onChangeText={this.onChangeText}
+        onSubmitEditing={this.onSubmitEditing}
+      />
+    );
+  }
 }
 
 const styles = StyleSheet.create({
-    input: {
-        padding: 15,
-        height: 50,
-    },
+  input: {
+    padding: 15,
+    height: 50
+  }
 });

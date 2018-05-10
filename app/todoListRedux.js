@@ -1,24 +1,37 @@
-// The types of actions that you can dispatch to modify the state of the store
+// The actionTypes of actions that you can dispatch to modify the state of the store
 import { combineReducers } from "redux";
 
-export const types = {
-  ADD: "ADD",
-  REMOVE: "REMOVE"
+const actionTypes = {
+  ADD_TODO: "ADD_TODO",
+  REMOVE_TODO: "REMOVE_TODO",
+  ADD_GOAL: "ADD_GOAL",
+  REMOVE_GOAL: "REMOVE_GOAL"
 };
 
 // Helper functions to dispatch actions, optionally with payloads
-export const actionCreators = {
-  add: item => {
-    return { type: types.ADD, payload: item };
+const actionCreators = {
+  addTodo: item => {
+    return { type: actionTypes.ADD_TODO, payload: item };
   },
-  remove: index => {
-    return { type: types.REMOVE, payload: index };
+  removeTodo: index => {
+    return { type: actionTypes.REMOVE_TODO, payload: index };
+  },
+  addGoal: item => {
+    return { type: actionTypes.ADD_GOAL, payload: item };
+  },
+  removeGoal: index => {
+    return { type: actionTypes.REMOVE_GOAL, payload: index };
   }
 };
 
 // Initial state of the store
 const initialState = {
-  todos: ["Click to remove", "Learn React Native", "Write Code", "Ship App"],
+  todos: [
+    "Click to removeTodo",
+    "Learn React Native",
+    "Write Code",
+    "Ship App"
+  ],
   goals: ["React Native", "kotlin"]
 };
 
@@ -34,10 +47,10 @@ const todoReducer = (state = initialState.todos, action) => {
   const { type, payload } = action;
 
   switch (type) {
-    case types.ADD: {
+    case actionTypes.ADD_TODO: {
       return [...state, payload];
     }
-    case types.REMOVE: {
+    case actionTypes.REMOVE_TODO: {
       return todos.filter((todo, i) => i !== payload);
     }
   }
@@ -50,10 +63,10 @@ const goalReducer = (state = initialState.goals, action) => {
   const { type, payload } = action;
 
   switch (type) {
-    case types.ADD: {
+    case actionTypes.ADD_GOAL: {
       return [...state, payload];
     }
-    case types.REMOVE: {
+    case actionTypes.REMOVE_GOAL: {
       return goals.filter((todo, i) => i !== payload);
     }
   }
@@ -61,7 +74,25 @@ const goalReducer = (state = initialState.goals, action) => {
   return state;
 };
 
-export const rootReducer = combineReducers({
+export const checker = store => next => action => {
+  console.log("here here");
+  if (
+    action.type === actionTypes.ADD_TODO &&
+    action.payload.toLowerCase().includes("shitcoin")
+  ) {
+    alert("shitcoin hehe");
+    return console.log("Nope. That's a bad idea");
+  }
+  return next(action);
+};
+
+const rootReducer = combineReducers({
   todos: todoReducer,
   goals: goalReducer
 });
+
+export default {
+  actionTypes,
+  rootReducer,
+  actionCreators
+};

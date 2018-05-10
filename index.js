@@ -3,9 +3,9 @@
  * The Provider will let us connect our App container to the store with connect().
  * */
 import { AppRegistry } from "react-native";
-import { createStore } from "redux";
+import { applyMiddleware, createStore } from "redux";
 // Import the todoReducer and create a store
-import { rootReducer } from "./app/todoListRedux";
+import todoListRedux, { checker } from "./app/todoListRedux";
 // Import the App container component
 import App from "./App";
 import React from "react";
@@ -18,9 +18,12 @@ const persistConfig = {
   key: "root",
   storage
 };
-const persistedReducer = persistReducer(persistConfig, rootReducer);
+const persistedReducer = persistReducer(
+  persistConfig,
+  todoListRedux.rootReducer
+);
 
-let store = createStore(persistedReducer);
+let store = createStore(persistedReducer, applyMiddleware(checker));
 let persistor = persistStore(store);
 
 // Pass the store into the Provider

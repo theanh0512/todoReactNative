@@ -7,7 +7,7 @@
 import React, { Component } from "react";
 import { View } from "react-native";
 
-import { actionCreators } from "./app/todoListRedux";
+import todoListRedux from "./app/todoListRedux";
 import List from "./app/List";
 import Input from "./app/Input";
 import Title from "./app/Title";
@@ -22,13 +22,25 @@ class App extends Component {
   onAddTodo = text => {
     const { dispatch } = this.props;
 
-    dispatch(actionCreators.add(text));
+    dispatch(todoListRedux.actionCreators.addTodo(text));
   };
 
   onRemoveTodo = index => {
     const { dispatch } = this.props;
 
-    dispatch(actionCreators.remove(index));
+    dispatch(todoListRedux.actionCreators.removeTodo(index));
+  };
+
+  onAddGoal = text => {
+    const { dispatch } = this.props;
+
+    dispatch(todoListRedux.actionCreators.addGoal(text));
+  };
+
+  onRemoveGoal = index => {
+    const { dispatch } = this.props;
+
+    dispatch(todoListRedux.actionCreators.removeGoal(index));
   };
 
   render() {
@@ -46,9 +58,9 @@ class App extends Component {
         <Title>Goal List</Title>
         <Input
           placeholder={"Type a goal, then hit enter!"}
-          onSubmitEditing={this.onAddTodo}
+          onSubmitEditing={this.onAddGoal}
         />
-        <List list={goals} onPressItem={this.onRemoveTodo} />
+        <List list={goals} onPressItem={this.onRemoveGoal} />
       </View>
     );
   }
