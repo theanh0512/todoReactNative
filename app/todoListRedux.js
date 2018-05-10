@@ -74,6 +74,7 @@ const goalReducer = (state = initialState.goals, action) => {
   return state;
 };
 
+//middleware function
 export const checker = store => next => action => {
   console.log("here here");
   if (
@@ -90,6 +91,15 @@ const rootReducer = combineReducers({
   todos: todoReducer,
   goals: goalReducer
 });
+
+export const logger = store => next => action => {
+  console.group(action.type);
+  console.log("The action: ", action);
+  const result = next(action);
+  console.log("The new state: ", store.getState());
+  console.groupEnd();
+  return result;
+};
 
 export default {
   actionTypes,
