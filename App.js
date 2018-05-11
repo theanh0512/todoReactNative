@@ -12,11 +12,12 @@ import List from "./app/List";
 import Input from "./app/Input";
 import Title from "./app/Title";
 import { connect } from "react-redux";
-import { fetchGoals, fetchTodos } from "./app/API";
+import { deleteGoal, deleteTodo, fetchGoals, fetchTodos } from "./app/API";
 
 const mapStateToProps = state => ({
   todos: state.todos,
-  goals: state.goals
+  goals: state.goals,
+  loading: state.loading
 });
 
 class App extends Component {
@@ -30,29 +31,45 @@ class App extends Component {
   onAddTodo = text => {
     const { dispatch } = this.props;
 
-    dispatch(todoListRedux.actionCreators.addTodo(text));
+    dispatch(todoListRedux.actionCreators.addTodo({ item: text }));
   };
 
-  onRemoveTodo = index => {
+  onRemoveTodo = (index, { id, name }) => {
     const { dispatch } = this.props;
-
     dispatch(todoListRedux.actionCreators.removeTodo(index));
+
+    return deleteTodo(id).catch(() => {
+      dispatch(todoListRedux.actionCreators.addTodo({ item: name, id: id }));
+      alert("An error occurred. Try again.");
+    });
   };
 
   onAddGoal = text => {
     const { dispatch } = this.props;
 
-    dispatch(todoListRedux.actionCreators.addGoal(text));
+    dispatch(todoListRedux.actionCreators.addGoal({ item: text }));
   };
 
-  onRemoveGoal = index => {
+  onRemoveGoal = (index, { id, name }) => {
     const { dispatch } = this.props;
-
     dispatch(todoListRedux.actionCreators.removeGoal(index));
+
+    return deleteGoal(id).catch(() => {
+      dispatch(todoListRedux.actionCreators.addGoal({ item: name, id: id }));
+      alert("An error occurred. Try again.");
+    });
   };
 
   render() {
-    const { todos, goals } = this.props;
+    const { todos, goals, loading } = this.props;
+
+    if (loading === true) {
+      return (
+        <View>
+          <Title>LOADING</Title>
+        </View>
+      );
+    }
 
     return (
       <View>

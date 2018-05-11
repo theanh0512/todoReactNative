@@ -6,7 +6,10 @@ export default class List extends Component {
     const { onPressItem } = this.props;
 
     return (
-      <TouchableOpacity style={styles.item} onPress={() => onPressItem(i)}>
+      <TouchableOpacity
+        style={styles.item}
+        onPress={() => onPressItem(i, { id, name })}
+      >
         <Text>{name}</Text>
       </TouchableOpacity>
     );

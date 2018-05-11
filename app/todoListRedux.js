@@ -11,11 +11,11 @@ const actionTypes = {
 
 // Helper functions to dispatch actions, optionally with payloads
 const actionCreators = {
-  addTodo: item => {
+  addTodo: ({ item, id = generateId() }) => {
     return {
       type: actionTypes.ADD_TODO,
       payload: {
-        id: generateId(),
+        id: id,
         name: item,
         complete: false
       }
@@ -24,11 +24,11 @@ const actionCreators = {
   removeTodo: index => {
     return { type: actionTypes.REMOVE_TODO, payload: index };
   },
-  addGoal: item => {
+  addGoal: ({ item, id = generateId() }) => {
     return {
       type: actionTypes.ADD_GOAL,
       payload: {
-        id: generateId(),
+        id: id,
         name: item,
         complete: false
       }
@@ -128,6 +128,15 @@ const goalReducer = (state = initialState.goals, action) => {
   return state;
 };
 
+const loadingReducer = (state = true, action) => {
+  switch (action.type) {
+    case actionTypes.RECEIVE_DATA:
+      return false;
+    default:
+      return state;
+  }
+};
+
 //middleware function
 export const checker = store => next => action => {
   console.log("here here");
@@ -143,7 +152,8 @@ export const checker = store => next => action => {
 
 const rootReducer = combineReducers({
   todos: todoReducer,
-  goals: goalReducer
+  goals: goalReducer,
+  loading: loadingReducer
 });
 
 export const logger = store => next => action => {
@@ -158,5 +168,6 @@ export const logger = store => next => action => {
 export default {
   actionTypes,
   rootReducer,
+  loadingReducer,
   actionCreators
 };
