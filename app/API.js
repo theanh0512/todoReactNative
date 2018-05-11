@@ -79,7 +79,7 @@ export const saveGoal = function(name) {
   });
 };
 
-export const deleteGoal = function(id) {
+export const deleteGoalApi = function(id) {
   return new Promise((res, rej) => {
     setTimeout(() => {
       goals = goals.filter(goal => goal.id !== id);
@@ -88,7 +88,7 @@ export const deleteGoal = function(id) {
   });
 };
 
-export const deleteTodo = function(id) {
+export const deleteTodoApi = function(id) {
   return new Promise((res, rej) => {
     setTimeout(() => {
       todos = todos.filter(todo => todo.id !== id);

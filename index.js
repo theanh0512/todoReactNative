@@ -13,6 +13,7 @@ import { Provider } from "react-redux";
 import { persistReducer, persistStore } from "redux-persist";
 import { PersistGate } from "redux-persist/integration/react";
 import storage from "redux-persist/lib/storage";
+import thunk from "redux-thunk";
 
 const persistConfig = {
   key: "root",
@@ -23,7 +24,10 @@ const persistedReducer = persistReducer(
   todoListRedux.rootReducer
 );
 
-let store = createStore(persistedReducer, applyMiddleware(checker, logger));
+let store = createStore(
+  persistedReducer,
+  applyMiddleware(thunk, checker, logger)
+);
 let persistor = persistStore(store);
 
 // Pass the store into the Provider

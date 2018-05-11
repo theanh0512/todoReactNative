@@ -1,5 +1,6 @@
 // The actionTypes of actions that you can dispatch to modify the state of the store
 import { combineReducers } from "redux";
+import { deleteTodoApi } from "./API";
 
 const actionTypes = {
   ADD_TODO: "ADD_TODO",
@@ -136,6 +137,18 @@ const loadingReducer = (state = true, action) => {
       return state;
   }
 };
+
+//redux-thunk
+export function handleDeleteTodo(index, { id, name }) {
+  return dispatch => {
+    dispatch(actionCreators.removeTodo(index));
+
+    return deleteTodoApi(id).catch(() => {
+      dispatch(actionCreators.addTodo({ item: name, id: id }));
+      alert("An error occurred. Try again.");
+    });
+  };
+}
 
 //middleware function
 export const checker = store => next => action => {
