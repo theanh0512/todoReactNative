@@ -5,34 +5,82 @@ const actionTypes = {
   ADD_TODO: "ADD_TODO",
   REMOVE_TODO: "REMOVE_TODO",
   ADD_GOAL: "ADD_GOAL",
-  REMOVE_GOAL: "REMOVE_GOAL"
+  REMOVE_GOAL: "REMOVE_GOAL",
+  RECEIVE_DATA: "RECEIVE_DATA"
 };
 
 // Helper functions to dispatch actions, optionally with payloads
 const actionCreators = {
   addTodo: item => {
-    return { type: actionTypes.ADD_TODO, payload: item };
+    return {
+      type: actionTypes.ADD_TODO,
+      payload: {
+        id: generateId(),
+        name: item,
+        complete: false
+      }
+    };
   },
   removeTodo: index => {
     return { type: actionTypes.REMOVE_TODO, payload: index };
   },
   addGoal: item => {
-    return { type: actionTypes.ADD_GOAL, payload: item };
+    return {
+      type: actionTypes.ADD_GOAL,
+      payload: {
+        id: generateId(),
+        name: item,
+        complete: false
+      }
+    };
   },
   removeGoal: index => {
     return { type: actionTypes.REMOVE_GOAL, payload: index };
+  },
+  receiveData: (todos, goals) => {
+    return {
+      type: actionTypes.RECEIVE_DATA,
+      todos,
+      goals
+    };
   }
 };
+
+function generateId() {
+  return Math.random()
+    .toString(36)
+    .substring(2);
+}
 
 // Initial state of the store
 const initialState = {
   todos: [
-    "Click to removeTodo",
-    "Learn React Native",
-    "Write Code",
-    "Ship App"
+    {
+      id: generateId(),
+      name: "Do tasks",
+      complete: false
+    },
+    {
+      id: generateId(),
+      name: "Learn React Native",
+      complete: false
+    },
+    {
+      id: generateId(),
+      name: "Write Code",
+      complete: true
+    }
   ],
-  goals: ["React Native", "kotlin"]
+  goals: [
+    {
+      id: generateId(),
+      name: "Learn Kotlin"
+    },
+    {
+      id: generateId(),
+      name: "Raise fishes"
+    }
+  ]
 };
 
 // Function to handle actions and update the state of the store.
@@ -53,6 +101,9 @@ const todoReducer = (state = initialState.todos, action) => {
     case actionTypes.REMOVE_TODO: {
       return todos.filter((todo, i) => i !== payload);
     }
+    case actionTypes.RECEIVE_DATA: {
+      return action.todos;
+    }
   }
 
   return state;
@@ -69,6 +120,9 @@ const goalReducer = (state = initialState.goals, action) => {
     case actionTypes.REMOVE_GOAL: {
       return goals.filter((todo, i) => i !== payload);
     }
+    case actionTypes.RECEIVE_DATA: {
+      return action.goals;
+    }
   }
 
   return state;
@@ -79,7 +133,7 @@ export const checker = store => next => action => {
   console.log("here here");
   if (
     action.type === actionTypes.ADD_TODO &&
-    action.payload.toLowerCase().includes("shitcoin")
+    action.payload.name.toLowerCase().includes("shitcoin")
   ) {
     alert("shitcoin hehe");
     return console.log("Nope. That's a bad idea");

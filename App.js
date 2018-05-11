@@ -12,6 +12,7 @@ import List from "./app/List";
 import Input from "./app/Input";
 import Title from "./app/Title";
 import { connect } from "react-redux";
+import { fetchGoals, fetchTodos } from "./app/API";
 
 const mapStateToProps = state => ({
   todos: state.todos,
@@ -19,6 +20,13 @@ const mapStateToProps = state => ({
 });
 
 class App extends Component {
+  componentDidMount() {
+    const { dispatch } = this.props;
+    Promise.all([fetchTodos(), fetchGoals()]).then(([todos, goals]) => {
+      dispatch(todoListRedux.actionCreators.receiveData(todos, goals));
+    });
+  }
+
   onAddTodo = text => {
     const { dispatch } = this.props;
 
