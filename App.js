@@ -7,12 +7,15 @@
 import React, { Component } from "react";
 import { View } from "react-native";
 
-import todoListRedux, { handleDeleteTodo } from "./app/todoListRedux";
+import todoListRedux, {
+  handleDeleteGoal,
+  handleDeleteTodo,
+  handleInitialData
+} from "./app/todoListRedux";
 import List from "./app/List";
 import Input from "./app/Input";
 import Title from "./app/Title";
 import { connect } from "react-redux";
-import { deleteGoalApi, fetchGoals, fetchTodos } from "./app/API";
 
 const mapStateToProps = state => ({
   todos: state.todos,
@@ -23,9 +26,7 @@ const mapStateToProps = state => ({
 class App extends Component {
   componentDidMount() {
     const { dispatch } = this.props;
-    Promise.all([fetchTodos(), fetchGoals()]).then(([todos, goals]) => {
-      dispatch(todoListRedux.actionCreators.receiveData(todos, goals));
-    });
+    dispatch(handleInitialData());
   }
 
   onAddTodo = text => {
@@ -47,12 +48,7 @@ class App extends Component {
 
   onRemoveGoal = (index, { id, name }) => {
     const { dispatch } = this.props;
-    dispatch(todoListRedux.actionCreators.removeGoal(index));
-
-    return deleteGoalApi(id).catch(() => {
-      dispatch(todoListRedux.actionCreators.addGoal({ item: name, id: id }));
-      alert("An error occurred. Try again.");
-    });
+    dispatch(handleDeleteGoal(index, { name, id }));
   };
 
   render() {

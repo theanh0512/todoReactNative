@@ -1,6 +1,6 @@
 // The actionTypes of actions that you can dispatch to modify the state of the store
 import { combineReducers } from "redux";
-import { deleteTodoApi } from "./API";
+import { deleteGoalApi, deleteTodoApi, fetchGoals, fetchTodos } from "./API";
 
 const actionTypes = {
   ADD_TODO: "ADD_TODO",
@@ -146,6 +146,25 @@ export function handleDeleteTodo(index, { id, name }) {
     return deleteTodoApi(id).catch(() => {
       dispatch(actionCreators.addTodo({ item: name, id: id }));
       alert("An error occurred. Try again.");
+    });
+  };
+}
+
+export function handleDeleteGoal(index, { id, name }) {
+  return dispatch => {
+    dispatch(actionCreators.removeGoal(index));
+
+    return deleteGoalApi(id).catch(() => {
+      dispatch(actionCreators.addTodo({ item: name, id: id }));
+      alert("An error occurred. Try again.");
+    });
+  };
+}
+
+export function handleInitialData() {
+  return dispatch => {
+    return Promise.all([fetchTodos(), fetchGoals()]).then(([todos, goals]) => {
+      dispatch(actionCreators.receiveData(todos, goals));
     });
   };
 }
